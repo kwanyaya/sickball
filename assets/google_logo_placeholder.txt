@@ -1,0 +1,2 @@
+# Google Logo Placeholder
+# Replace this file with the actual Google logo image (google_logo.png)
