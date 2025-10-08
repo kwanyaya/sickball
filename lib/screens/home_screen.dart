@@ -118,7 +118,24 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const DashboardScreen(),
+                  builder:
+                      (context) => MultiProvider(
+                        providers: [
+                          ChangeNotifierProvider.value(
+                            value: Provider.of<AuthProvider>(
+                              context,
+                              listen: false,
+                            ),
+                          ),
+                          ChangeNotifierProvider.value(
+                            value: Provider.of<SickLeaveProvider>(
+                              context,
+                              listen: false,
+                            ),
+                          ),
+                        ],
+                        child: const DashboardScreen(),
+                      ),
                 ),
               );
             },

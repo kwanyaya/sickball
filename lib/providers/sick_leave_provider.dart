@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-import '../models/sick_leave_model.dart';
-import '../models/reason_model.dart';
-import '../services/firestore_service.dart';
 
 class SickLeaveProvider with ChangeNotifier {
-  final FirestoreService _firestoreService = FirestoreService();
-
-  List<SickLeaveModel> _sickLeaves = [];
-  List<ReasonModel> _reasons = [];
+  List<dynamic> _sickLeaves = [];
+  List<String> _reasons = [
+    'Feeling unwell',
+    'Flu symptoms',
+    'Stomach bug',
+    'Migraine',
+    'Food poisoning',
+  ];
   bool _isLoading = false;
   String? _errorMessage;
 
-  List<SickLeaveModel> get sickLeaves => _sickLeaves;
-  List<ReasonModel> get reasons => _reasons;
+  List<dynamic> get sickLeaves => _sickLeaves;
+  List<String> get reasons => _reasons;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
@@ -22,7 +23,9 @@ class SickLeaveProvider with ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      _sickLeaves = await _firestoreService.getUserSickLeaves(userId);
+      // Simulate loading
+      await Future.delayed(const Duration(milliseconds: 500));
+      _sickLeaves = []; // Empty list for now
     } catch (e) {
       _errorMessage = 'Failed to load sick leaves: $e';
     } finally {
@@ -33,43 +36,42 @@ class SickLeaveProvider with ChangeNotifier {
 
   Future<void> loadReasons() async {
     try {
-      _reasons = await _firestoreService.getAllReasons();
+      _isLoading = true;
       notifyListeners();
+
+      // Simulate loading - reasons are already initialized
+      await Future.delayed(const Duration(milliseconds: 300));
     } catch (e) {
       _errorMessage = 'Failed to load reasons: $e';
+    } finally {
+      _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<String?> generateRandomReason(String userId) async {
+  Future<String> generateReason(String userId) async {
     try {
-      final availableReasons = await _firestoreService.getAvailableReasons(
-        userId,
-      );
+      _isLoading = true;
+      notifyListeners();
 
-      if (availableReasons.isEmpty) {
-        // If no unused reasons, get all reasons
-        final allReasons = await _firestoreService.getAllReasons();
-        if (allReasons.isEmpty) {
-          return 'No reasons available';
-        }
-        final random = Random();
-        return allReasons[random.nextInt(allReasons.length)].text;
-      }
-
+      // Simulate generation
+      await Future.delayed(const Duration(milliseconds: 800));
       final random = Random();
-      final selectedReason =
-          availableReasons[random.nextInt(availableReasons.length)];
+      final selectedReason = _reasons[random.nextInt(_reasons.length)];
 
-      // Mark reason as used
-      await _firestoreService.markReasonAsUsed(selectedReason.id, userId);
-
-      return selectedReason.text;
+      return selectedReason;
     } catch (e) {
       _errorMessage = 'Failed to generate reason: $e';
+      return 'Feeling unwell'; // Default fallback
+    } finally {
+      _isLoading = false;
       notifyListeners();
-      return null;
     }
+  }
+
+  void clearError() {
+    _errorMessage = null;
+    notifyListeners();
   }
 
   Future<void> addSickLeave(String userId, String reason) async {
@@ -77,21 +79,18 @@ class SickLeaveProvider with ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      final sickLeave = SickLeaveModel(
-        id: '',
-        userId: userId,
-        reason: reason,
-        date: DateTime.now(),
-        createdAt: DateTime.now(),
-      );
+      // Simulate adding sick leave
+      await Future.delayed(const Duration(milliseconds: 500));
 
-      final id = await _firestoreService.addSickLeave(sickLeave);
-      final newSickLeave = sickLeave.copyWith(id: id);
+      // Create a mock sick leave entry
+      final sickLeave = {
+        'id': DateTime.now().millisecondsSinceEpoch.toString(),
+        'userId': userId,
+        'reason': reason,
+        'date': DateTime.now(),
+      };
 
-      _sickLeaves.insert(0, newSickLeave);
-
-      // Increment user's sick day count
-      await _firestoreService.incrementSickDays(userId);
+      _sickLeaves.add(sickLeave);
     } catch (e) {
       _errorMessage = 'Failed to add sick leave: $e';
     } finally {
@@ -100,45 +99,31 @@ class SickLeaveProvider with ChangeNotifier {
     }
   }
 
-  Future<List<SickLeaveModel>> getSickLeavesForMonth(
-    String userId,
-    DateTime month,
-  ) async {
-    try {
-      return await _firestoreService.getUserSickLeavesForMonth(userId, month);
-    } catch (e) {
-      _errorMessage = 'Failed to load monthly sick leaves: $e';
-      notifyListeners();
-      return [];
-    }
+  Future<String> generateRandomReason(String userId) async {
+    return await generateReason(userId);
   }
 
   int getSickLeavesThisMonth(String userId) {
     final now = DateTime.now();
-    final thisMonth = DateTime(now.year, now.month);
-    final nextMonth = DateTime(now.year, now.month + 1);
+    final firstDayOfMonth = DateTime(now.year, now.month, 1);
 
-    return _sickLeaves.where((leave) {
-      return leave.userId == userId &&
-          leave.date.isAfter(thisMonth.subtract(const Duration(days: 1))) &&
-          leave.date.isBefore(nextMonth);
+    return _sickLeaves.where((sickLeave) {
+      return sickLeave.date.isAfter(
+            firstDayOfMonth.subtract(const Duration(days: 1)),
+          ) &&
+          sickLeave.date.isBefore(now.add(const Duration(days: 1)));
     }).length;
   }
 
   int getSickLeavesThisYear(String userId) {
     final now = DateTime.now();
-    final thisYear = DateTime(now.year);
-    final nextYear = DateTime(now.year + 1);
+    final firstDayOfYear = DateTime(now.year, 1, 1);
 
-    return _sickLeaves.where((leave) {
-      return leave.userId == userId &&
-          leave.date.isAfter(thisYear.subtract(const Duration(days: 1))) &&
-          leave.date.isBefore(nextYear);
+    return _sickLeaves.where((sickLeave) {
+      return sickLeave.date.isAfter(
+            firstDayOfYear.subtract(const Duration(days: 1)),
+          ) &&
+          sickLeave.date.isBefore(now.add(const Duration(days: 1)));
     }).length;
-  }
-
-  void clearError() {
-    _errorMessage = null;
-    notifyListeners();
   }
 }
