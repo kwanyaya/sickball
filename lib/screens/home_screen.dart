@@ -115,23 +115,25 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () {
+              // Capture providers before navigation
+              final authProvider = Provider.of<AuthProvider>(
+                context,
+                listen: false,
+              );
+              final sickLeaveProvider = Provider.of<SickLeaveProvider>(
+                context,
+                listen: false,
+              );
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder:
                       (context) => MultiProvider(
                         providers: [
+                          ChangeNotifierProvider.value(value: authProvider),
                           ChangeNotifierProvider.value(
-                            value: Provider.of<AuthProvider>(
-                              context,
-                              listen: false,
-                            ),
-                          ),
-                          ChangeNotifierProvider.value(
-                            value: Provider.of<SickLeaveProvider>(
-                              context,
-                              listen: false,
-                            ),
+                            value: sickLeaveProvider,
                           ),
                         ],
                         child: const DashboardScreen(),

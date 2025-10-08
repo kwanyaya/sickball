@@ -22,14 +22,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _loadData() {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final sickLeaveProvider = Provider.of<SickLeaveProvider>(
-      context,
-      listen: false,
-    );
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final sickLeaveProvider = Provider.of<SickLeaveProvider>(
+        context,
+        listen: false,
+      );
 
-    if (authProvider.user != null) {
-      sickLeaveProvider.loadUserSickLeaves(authProvider.user!.uid);
+      if (authProvider.user != null) {
+        sickLeaveProvider.loadUserSickLeaves(authProvider.user!.uid);
+      }
+    } catch (e) {
+      // Handle provider not found error gracefully
+      print('Provider not found in DashboardScreen: $e');
     }
   }
 
