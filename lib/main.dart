@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/auth_provider.dart';
-import 'providers/sick_leave_provider.dart';
+import 'providers/postgres_auth_provider.dart';
+import 'providers/postgres_sick_leave_provider.dart';
+import 'providers/language_provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
+import 'widgets/auth_wrapper.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,15 +24,37 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SickBall',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-        fontFamily: 'Roboto',
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProvider(create: (_) => PostgresAuthProvider()),
+        ChangeNotifierProvider(create: (_) => PostgresSickLeaveProvider()),
+      ],
+      child: Consumer<LanguageProvider>(
+        builder: (context, languageProvider, child) {
+          return MaterialApp(
+            title: 'SickBall',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+              useMaterial3: true,
+              fontFamily: 'Roboto',
+            ),
+            debugShowCheckedModeBanner: false,
+
+            // Internationalization Configuration
+            // TODO: Enable after fixing localization imports
+            // localizationsDelegates: [
+            //   AppLocalizations.delegate,
+            //   GlobalMaterialLocalizations.delegate,
+            //   GlobalWidgetsLocalizations.delegate,
+            //   GlobalCupertinoLocalizations.delegate,
+            // ],
+            // supportedLocales: LanguageProvider.supportedLocales,
+            // locale: languageProvider.currentLocale,
+            home: const AuthWrapper(),
+          );
+        },
       ),
-      debugShowCheckedModeBanner: false,
-      home: const MinimalApp(),
     );
   }
 }
@@ -41,8 +66,8 @@ class MinimalApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => SickLeaveProvider()),
+        ChangeNotifierProvider(create: (_) => PostgresAuthProvider()),
+        ChangeNotifierProvider(create: (_) => PostgresSickLeaveProvider()),
       ],
       child: const AuthWrapper(),
     );
@@ -54,7 +79,7 @@ class AuthWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
+    return Consumer<PostgresAuthProvider>(
       builder: (context, authProvider, _) {
         if (authProvider.isAuthenticated) {
           return const HomeScreen();

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import '../providers/auth_provider.dart';
-import '../providers/sick_leave_provider.dart';
+import '../providers/postgres_auth_provider.dart';
+import '../providers/postgres_sick_leave_provider.dart';
 import '../models/sick_leave_model.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -23,8 +23,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void _loadData() {
     try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final sickLeaveProvider = Provider.of<SickLeaveProvider>(
+      final authProvider = Provider.of<PostgresAuthProvider>(
+        context,
+        listen: false,
+      );
+      final sickLeaveProvider = Provider.of<PostgresSickLeaveProvider>(
         context,
         listen: false,
       );
@@ -54,9 +57,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Statistics Cards
-            Consumer<AuthProvider>(
+            Consumer<PostgresAuthProvider>(
               builder: (context, authProvider, child) {
-                return Consumer<SickLeaveProvider>(
+                return Consumer<PostgresSickLeaveProvider>(
                   builder: (context, sickLeaveProvider, child) {
                     if (authProvider.user == null) {
                       return const Center(child: Text('User not found'));
@@ -120,7 +123,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(height: 12),
 
-            Consumer<SickLeaveProvider>(
+            Consumer<PostgresSickLeaveProvider>(
               builder: (context, sickLeaveProvider, child) {
                 if (sickLeaveProvider.isLoading) {
                   return const Center(

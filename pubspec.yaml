@@ -40,8 +40,16 @@ dependencies:
   cloud_firestore: ^5.4.3
   google_sign_in: ^6.2.1
   
+  # Database - PostgreSQL
+  postgres: ^3.0.2
+  sqflite: ^2.3.3
+  path: ^1.9.0
+  
   # State Management
   provider: ^6.1.2
+  
+  # Localization & Preferences
+  shared_preferences: ^2.2.3
   
   # Social Sharing
   share_plus: ^10.0.2
@@ -50,6 +58,8 @@ dependencies:
   # UI Enhancements
   intl: ^0.19.0
   flutter_svg: ^2.0.10+1
+  flutter_localizations:
+    sdk: flutter
   
   # HTTP & Utilities
   http: ^1.2.2
@@ -75,6 +85,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  
+  # Enable internationalization
+  generate: true
 
   # To add assets to your application, add an assets section, like this:
   assets:

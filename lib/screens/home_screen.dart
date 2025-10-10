@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import '../providers/auth_provider.dart';
-import '../providers/sick_leave_provider.dart';
+import '../providers/postgres_auth_provider.dart';
+import '../providers/postgres_sick_leave_provider.dart';
+import '../widgets/language_toggle_button.dart';
+import '../utils/language_manager.dart';
 import 'dashboard_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,8 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _loadData() {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final sickLeaveProvider = Provider.of<SickLeaveProvider>(
+    final authProvider = Provider.of<PostgresAuthProvider>(
+      context,
+      listen: false,
+    );
+    final sickLeaveProvider = Provider.of<PostgresSickLeaveProvider>(
       context,
       listen: false,
     );
@@ -38,8 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _generateReason() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final sickLeaveProvider = Provider.of<SickLeaveProvider>(
+    final authProvider = Provider.of<PostgresAuthProvider>(
+      context,
+      listen: false,
+    );
+    final sickLeaveProvider = Provider.of<PostgresSickLeaveProvider>(
       context,
       listen: false,
     );
@@ -67,8 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _useSickLeave() async {
     if (_generatedReason == null) return;
 
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final sickLeaveProvider = Provider.of<SickLeaveProvider>(
+    final authProvider = Provider.of<PostgresAuthProvider>(
+      context,
+      listen: false,
+    );
+    final sickLeaveProvider = Provider.of<PostgresSickLeaveProvider>(
       context,
       listen: false,
     );
@@ -82,8 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Sick leave recorded successfully!'),
+        SnackBar(
+          content: TranslatedText('sick_leave_recorded'),
           backgroundColor: Colors.green,
         ),
       );
@@ -108,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.blue[50],
       appBar: AppBar(
-        title: const Text('SickBall'),
+        title: const TranslatedText('app_title'),
         backgroundColor: Colors.blue[600],
         foregroundColor: Colors.white,
         elevation: 0,
@@ -116,11 +127,11 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () {
               // Capture providers before navigation
-              final authProvider = Provider.of<AuthProvider>(
+              final authProvider = Provider.of<PostgresAuthProvider>(
                 context,
                 listen: false,
               );
-              final sickLeaveProvider = Provider.of<SickLeaveProvider>(
+              final sickLeaveProvider = Provider.of<PostgresSickLeaveProvider>(
                 context,
                 listen: false,
               );
@@ -143,10 +154,14 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             icon: const Icon(Icons.dashboard),
           ),
+          const LanguageToggleButton(),
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'logout') {
-                Provider.of<AuthProvider>(context, listen: false).signOut();
+                Provider.of<PostgresAuthProvider>(
+                  context,
+                  listen: false,
+                ).signOut();
               }
             },
             itemBuilder:
@@ -157,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Icon(Icons.logout, size: 20),
                         SizedBox(width: 8),
-                        Text('Logout'),
+                        TranslatedText('logout'),
                       ],
                     ),
                   ),
@@ -170,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             // Welcome Card
-            Consumer<AuthProvider>(
+            Consumer<PostgresAuthProvider>(
               builder: (context, authProvider, child) {
                 return Container(
                   width: double.infinity,
@@ -193,8 +208,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Welcome back!',
+                      TranslatedText(
+                        'welcome_back',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -210,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Consumer<SickLeaveProvider>(
+                      Consumer<PostgresSickLeaveProvider>(
                         builder: (context, sickLeaveProvider, child) {
                           final thisMonth = sickLeaveProvider
                               .getSickLeavesThisMonth(
@@ -318,10 +333,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   const Icon(Icons.refresh, size: 20),
                                   const SizedBox(width: 8),
-                                  Text(
+                                  TranslatedText(
                                     _generatedReason == null
-                                        ? 'Generate Reason'
-                                        : 'Generate New Reason',
+                                        ? 'generate_reason'
+                                        : 'generate_new_reason',
                                   ),
                                 ],
                               ),
@@ -343,12 +358,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.share, size: 16),
-                                SizedBox(width: 6),
-                                Text('Share'),
+                                const Icon(Icons.share, size: 16),
+                                const SizedBox(width: 6),
+                                TranslatedText('share'),
                               ],
                             ),
                           ),
@@ -364,12 +379,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.check, size: 16),
-                                SizedBox(width: 6),
-                                Text('Use This'),
+                                const Icon(Icons.check, size: 16),
+                                const SizedBox(width: 6),
+                                TranslatedText('use_this'),
                               ],
                             ),
                           ),
@@ -383,9 +398,9 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 24),
 
             // Quick Stats Card
-            Consumer<SickLeaveProvider>(
+            Consumer<PostgresSickLeaveProvider>(
               builder: (context, sickLeaveProvider, child) {
-                return Consumer<AuthProvider>(
+                return Consumer<PostgresAuthProvider>(
                   builder: (context, authProvider, child) {
                     final thisMonth = sickLeaveProvider.getSickLeavesThisMonth(
                       authProvider.user?.uid ?? '',
@@ -411,8 +426,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Column(
                         children: [
-                          Text(
-                            'Quick Stats',
+                          TranslatedText(
+                            'quick_stats',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -424,17 +439,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               _buildStatItem(
-                                'This Month',
+                                'this_month',
                                 thisMonth.toString(),
                                 Colors.blue,
                               ),
                               _buildStatItem(
-                                'This Year',
+                                'this_year',
                                 thisYear.toString(),
                                 Colors.orange,
                               ),
                               _buildStatItem(
-                                'Total',
+                                'total',
                                 total.toString(),
                                 Colors.purple,
                               ),
@@ -453,7 +468,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildStatItem(String label, String value, Color? color) {
+  Widget _buildStatItem(String translationKey, String value, Color? color) {
     return Column(
       children: [
         Container(
@@ -475,7 +490,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+        TranslatedText(
+          translationKey,
+          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+        ),
       ],
     );
   }

@@ -1,0 +1,86 @@
+{
+  "appTitle": "SickBall",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "homeTitle": "SickBall",
+  "@homeTitle": {
+    "description": "Title shown on home screen"
+  },
+  "loginTitle": "Smart Sick Leave Generator",
+  "@loginTitle": {
+    "description": "Subtitle on login screen"
+  },
+  "signInWithGoogle": "Sign in with Google",
+  "@signInWithGoogle": {
+    "description": "Button text for Google sign in"
+  },
+  "generateReason": "Generate Reason",
+  "@generateReason": {
+    "description": "Button text for generating sick leave reason"
+  },
+  "copyReason": "Copy Reason",
+  "@copyReason": {
+    "description": "Button text for copying reason to clipboard"
+  },
+  "shareReason": "Share Reason",
+  "@shareReason": {
+    "description": "Button text for sharing reason"
+  },
+  "dashboard": "Dashboard",
+  "@dashboard": {
+    "description": "Dashboard menu item"
+  },
+  "logout": "Logout",
+  "@logout": {
+    "description": "Logout menu item"
+  },
+  "thisMonth": "This Month",
+  "@thisMonth": {
+    "description": "Statistics label for current month"
+  },
+  "thisYear": "This Year",
+  "@thisYear": {
+    "description": "Statistics label for current year"
+  },
+  "totalSickDays": "Total Sick Days",
+  "@totalSickDays": {
+    "description": "Statistics label for total sick days"
+  },
+  "recentSickLeaves": "Recent Sick Leaves",
+  "@recentSickLeaves": {
+    "description": "Section title for recent sick leaves"
+  },
+  "noSickLeavesYet": "No sick leaves recorded yet",
+  "@noSickLeavesYet": {
+    "description": "Message when no sick leaves exist"
+  },
+  "startGenerating": "Start by generating your first sick leave reason!",
+  "@startGenerating": {
+    "description": "Encouragement message for first use"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language menu item"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  "traditionalChinese": "繁體中文",
+  "@traditionalChinese": {
+    "description": "Traditional Chinese language option"
+  },
+  "reasonCopied": "Reason copied to clipboard!",
+  "@reasonCopied": {
+    "description": "Toast message when reason is copied"
+  },
+  "generatingReason": "Generating reason...",
+  "@generatingReason": {
+    "description": "Loading message when generating reason"
+  },
+  "userNotFound": "User not found",
+  "@userNotFound": {
+    "description": "Error message when user is not found"
+  }
+}

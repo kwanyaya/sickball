@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+import '../providers/postgres_auth_provider.dart';
+import '../widgets/language_toggle_button.dart';
+import '../utils/language_manager.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -9,6 +11,12 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue[50],
+      appBar: AppBar(
+        backgroundColor: Colors.blue[600],
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: const [LanguageToggleButton()],
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -46,8 +54,8 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 8),
 
               // Subtitle
-              Text(
-                'Smart Sick Leave Generator',
+              TranslatedText(
+                'app_subtitle',
                 style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
               const SizedBox(height: 48),
@@ -74,8 +82,8 @@ class LoginScreen extends StatelessWidget {
                       color: Colors.amber[600],
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      'Generate creative and believable sick leave reasons instantly!',
+                    TranslatedText(
+                      'login_description',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
@@ -87,9 +95,9 @@ class LoginScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildFeature(Icons.track_changes, 'Track Usage'),
-                        _buildFeature(Icons.share, 'Easy Share'),
-                        _buildFeature(Icons.analytics, 'Statistics'),
+                        _buildFeature(Icons.track_changes, 'track_usage'),
+                        _buildFeature(Icons.share, 'easy_share'),
+                        _buildFeature(Icons.analytics, 'statistics'),
                       ],
                     ),
                   ],
@@ -98,7 +106,7 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 40),
 
               // Google Sign In Button
-              Consumer<AuthProvider>(
+              Consumer<PostgresAuthProvider>(
                 builder: (context, authProvider, child) {
                   return SizedBox(
                     width: double.infinity,
@@ -142,9 +150,9 @@ class LoginScreen extends StatelessWidget {
                                     },
                                   ),
                                   const SizedBox(width: 12),
-                                  const Text(
-                                    'Continue with Google',
-                                    style: TextStyle(
+                                  TranslatedText(
+                                    'continue_with_google',
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -157,7 +165,7 @@ class LoginScreen extends StatelessWidget {
               ),
 
               // Error message
-              Consumer<AuthProvider>(
+              Consumer<PostgresAuthProvider>(
                 builder: (context, authProvider, child) {
                   if (authProvider.errorMessage != null) {
                     return Container(
@@ -209,12 +217,15 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFeature(IconData icon, String label) {
+  Widget _buildFeature(IconData icon, String translationKey) {
     return Column(
       children: [
         Icon(icon, color: Colors.blue[600], size: 24),
         const SizedBox(height: 4),
-        Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+        TranslatedText(
+          translationKey,
+          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+        ),
       ],
     );
   }
