@@ -4,8 +4,9 @@ import 'providers/postgres_auth_provider.dart';
 import 'providers/postgres_sick_leave_provider.dart';
 import 'providers/language_provider.dart';
 import 'screens/home_screen.dart';
-import 'screens/login_screen.dart';
+import 'screens/modern_login_screen.dart';
 import 'widgets/auth_wrapper.dart';
+import 'theme/app_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
@@ -34,11 +35,7 @@ class MyApp extends StatelessWidget {
         builder: (context, languageProvider, child) {
           return MaterialApp(
             title: 'SickBall',
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-              useMaterial3: true,
-              fontFamily: 'Roboto',
-            ),
+            theme: AppTheme.lightTheme,
             debugShowCheckedModeBanner: false,
 
             // Internationalization Configuration

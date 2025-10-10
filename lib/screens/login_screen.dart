@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/postgres_auth_provider.dart';
 import '../widgets/language_toggle_button.dart';
 import '../utils/language_manager.dart';
+import '../theme/app_theme.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});

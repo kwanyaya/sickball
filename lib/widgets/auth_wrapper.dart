@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/postgres_auth_provider.dart';
-import '../screens/login_screen.dart';
+import '../screens/modern_login_screen.dart';
 import '../screens/home_screen.dart';
 
 class AuthWrapper extends StatelessWidget {
