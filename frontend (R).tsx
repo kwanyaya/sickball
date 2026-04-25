@@ -28,17 +28,23 @@ async function fetchAllBooks() {
 export default function MyPage() {
   const [books, setBooks] = useState<Book[]>()
   useEffect(() => {
-
+    fetchAllBooks().then(setBooks)
   }, []) // to do
   
   const [page, setPage] = useState(1)
   const [keyword, setKeyword] = useState('')
   const [tagFilters, setTagFilters] = useState<string[]>([])
+  const [filteredBooks, setFilteredBooks] = useState<Book[]>([])
   useEffect(() => {
+    const filtered = (books ?? []).filter(book => {
+      const matchesKeyword = book.name.toLowerCase().includes(keyword.toLowerCase())
+      const matchesTags = tagFilters.length === 0 || tagFilters.every(tag => book.tags.includes(tag))
+      return matchesKeyword && matchesTags
+    })
+    setFilteredBooks(filtered)
+  }, [books, keyword, tagFilters, page]) // to do
 
-  }, []) // to do
-
-  const shownItems: Book[] = [] // to do
+  const shownItems: Book[] = filteredBooks // to do
 
   // ... no need to write the UI part
 }
